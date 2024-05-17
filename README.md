@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Console Messenger - Java Socket & MySQL
 This project is a simple console-based messenger built using Java Sockets for communication and MySQL for database management. It was developed as a collaborative project by a two-member team to explore client-server architecture, socket programming, and database integration in Java.
 
@@ -23,3 +24,6 @@ Console-based UI: The entire project operates through a text-based interface in 
                                                                                                                                                                                                                                Java Sockets: برای مدیریت ارتباطات شبکه بین کلاینت‌ها و سرور استفاده شده است.
                                                                                                                                                                                                                            MySQL: برای ذخیره‌سازی اطلاعات کاربری (ثبت‌نام، ورود) و تاریخچه پیام‌ها استفاده شده است.
 چند نخی در جاوا: برای مدیریت همزمان چندین اتصال کلاینت.          
+=======
+# Chatroom
+>>>>>>> 471e4dd (Initial commit)

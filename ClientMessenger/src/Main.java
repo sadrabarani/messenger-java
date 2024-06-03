@@ -1,5 +1,6 @@
 import lombok.Getter;
 import lombok.Setter;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.Scanner;
@@ -10,21 +11,29 @@ public class Main {
         System.out.print("Enter your user name:");
         String userName = scanner.nextLine();
         Client client = new Client(userName);
+        client.connectClient();
     }
 }
 
 
 class Client {
     private String userName;
-    private Socket socket;
-    private DataOutputStream out = null;
-    private DataInputStream serverInput;
+    private static Socket socket;
+    private static DataOutputStream out = null;
+    private static DataInputStream serverInput;
     private Thread senderThread;
     private Thread recieverThread;
 
-    public Client(String userName) throws IOException {
-        socket = new Socket("127.0.0.1", 1234);
+    public Client(String userName) {
         this.userName = userName;
+    }
+
+    public void connectClient() throws IOException {
+        socket = new Socket("127.0.0.1", 8080);
+        System.out.println("connect");
+        setOut(new DataOutputStream(getSocket().getOutputStream()));
+        setServerInput(new DataInputStream(getSocket().getInputStream()));
+        out.writeUTF(userName);
         SendMessege send = new SendMessege(userName);
         senderThread = new Thread(send);
         senderThread.start();
@@ -92,15 +101,15 @@ class SendMessege extends Client implements Runnable {
     @Override
     public void run() {
         try {
-            setOut(new DataOutputStream(getSocket().getOutputStream()));
             while (true) {
                 Scanner scanner = new Scanner(System.in);
                 String str = scanner.nextLine();
                 getOut().writeUTF(str);
                 if (str.equals("exit")) {
+                    getOut().writeUTF(str);
                     closeEveryThing();
                     break;
-                }else if (str.equals("ping")) {
+                } else if (str.equals("ping")) {
                     long roundTripTime = ping(getOut(), getServerInput());
                     System.out.println("ping: " + roundTripTime + " ms");
                 }
@@ -121,7 +130,6 @@ class ReceiveMessege extends Client implements Runnable {
     @Override
     public void run() {
         try {
-            setServerInput(new DataInputStream(getSocket().getInputStream()));
             System.out.println(getServerInput().readUTF());
         } catch (IOException e) {
             System.out.println(e.getMessage());

@@ -20,6 +20,7 @@ public class Server {
             DataInputStream reader = new DataInputStream(connection.getInputStream());
             DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
             String name = reader.readUTF();
+            System.out.println(name+" connect");
             User searchedUser = null;
             for(User tmpUser : users)
             {
@@ -29,6 +30,7 @@ public class Server {
             if(searchedUser == null)
             {
                 User newUser = new User(connection, name);
+                users.add(newUser);
                 writer.writeUTF("Connected!");
                 newUser.run();
             }

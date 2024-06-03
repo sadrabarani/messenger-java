@@ -45,6 +45,19 @@ class Client {
         }
     }
 
+    public static long ping(DataOutputStream output, DataInputStream serverInput) {
+        try {
+            long startTime = System.currentTimeMillis();
+            output.writeUTF("ping");
+            String response = serverInput.readUTF();
+            long endTime = System.currentTimeMillis();
+            return endTime - startTime;
+        } catch (IOException e) {
+            System.out.println("Ping failed: " + e.getMessage());
+            return -1;
+        }
+    }
+
     public void setSocket(Socket socket) {
         this.socket = socket;
     }
@@ -84,9 +97,13 @@ class SendMessege extends Client implements Runnable {
                 Scanner scanner = new Scanner(System.in);
                 String str = scanner.nextLine();
                 getOut().writeUTF(str);
-                if (str.equals("finish"))
+                if (str.equals("exit")) {
                     closeEveryThing();
-                break;
+                    break;
+                }else if (str.equals("ping")) {
+                    long roundTripTime = ping(getOut(), getServerInput());
+                    System.out.println("ping: " + roundTripTime + " ms");
+                }
             }
         } catch (IOException e) {
             System.out.println(e.getMessage());

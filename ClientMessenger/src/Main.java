@@ -1,15 +1,113 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import lombok.Getter;
+import lombok.Setter;
+import java.io.*;
+import java.net.Socket;
+import java.util.Scanner;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+public class Main {
+    public static void main(String[] args) throws IOException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter your user name:");
+        String userName = scanner.nextLine();
+        Client client = new Client(userName);
+    }
+}
+
+
+class Client {
+    private String userName;
+    private Socket socket;
+    private DataOutputStream out = null;
+    private DataInputStream serverInput;
+    private Thread senderThread;
+    private Thread recieverThread;
+
+    public Client(String userName) throws IOException {
+        socket = new Socket("127.0.0.1", 1234);
+        this.userName = userName;
+        SendMessege send = new SendMessege(userName);
+        senderThread = new Thread(send);
+        senderThread.start();
+        ReceiveMessege receive = new ReceiveMessege(userName);
+        recieverThread = new Thread(receive);
+        recieverThread.start();
+    }
+
+    public void closeEveryThing() {
+        try {
+            socket.close();
+            out.close();
+            serverInput.close();
+            senderThread.interrupt();
+            recieverThread.interrupt();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public void setOut(DataOutputStream out) {
+        this.out = out;
+    }
+
+    public void setServerInput(DataInputStream serverInput) {
+        this.serverInput = serverInput;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public DataOutputStream getOut() {
+        return out;
+    }
+
+    public DataInputStream getServerInput() {
+        return serverInput;
+    }
+}
+
+class SendMessege extends Client implements Runnable {
+
+    public SendMessege(String userName) throws IOException {
+        super(userName);
+    }
+
+    @Override
+    public void run() {
+        try {
+            setOut(new DataOutputStream(getSocket().getOutputStream()));
+            while (true) {
+                Scanner scanner = new Scanner(System.in);
+                String str = scanner.nextLine();
+                getOut().writeUTF(str);
+                if (str.equals("finish"))
+                    closeEveryThing();
+                break;
+            }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+}
+
+
+class ReceiveMessege extends Client implements Runnable {
+
+    public ReceiveMessege(String userName) throws IOException {
+        super(userName);
+    }
+
+    @Override
+    public void run() {
+        try {
+            setServerInput(new DataInputStream(getSocket().getInputStream()));
+            System.out.println(getServerInput().readUTF());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 }

@@ -20,8 +20,7 @@ public class User extends Thread
     private DataOutputStream writer;
     private boolean isActive;
 
-    public User(Socket connection, String name) throws IOException
-    {
+    public User(Socket connection, String name) throws IOException {
         this.userName = name;
         this.connection = connection;
         this.reader = new DataInputStream(connection.getInputStream());
@@ -33,8 +32,7 @@ public class User extends Thread
     }
 
     @Override
-    public void run()
-    {
+    public void run() {
         try {
             String prompt = reader.readUTF();
             while (!prompt.equals("exit")) {
@@ -47,6 +45,16 @@ public class User extends Thread
                     case "newWhisper":
                         addWhisper(promptsArray[1], promptsArray[2]);
                         break;
+                    case "ping":
+                        writer.writeUTF("ping :");
+                        break;
+                    case "pv":
+                        writer.writeUTF(showAllUsers());
+                        User secUser = chooseUserForPv();
+                        if (secUser != null) {
+                            pvCmd(secUser);
+                        }
+                        break;
                     default:
                         writer.writeUTF("Invalid format");
                         break;
@@ -57,20 +65,61 @@ public class User extends Thread
             isActive = false;
             connection.close();
             interrupt();
-        }
-        catch (IOException exception)
-        {
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
     }
 
+    private void pvCmd(User secUser) throws IOException {
+        String prompt = reader.readUTF();
+        while (!prompt.equals("finish")) {
+            System.out.println(prompt);
+            String[] promptsArray = prompt.split(" -");
+            switch (promptsArray[0]) {
+                case "newMessage":
+                    pvnewMessage(promptsArray[1], secUser);
+                    break;
+                case "clear history":
+                    //todo
+                    break;
+            }
+            prompt = reader.readUTF();
+        }
+    }
+
+    private void pvnewMessage(String content, User secUser) throws IOException {
+        synchronized (messages) {
+            messages.add(new Message(content, LocalDateTime.now(), this, secUser));
+            synchronized (secUser) {
+                secUser.writer.writeUTF(messages.toString());
+            }
+        }
+    }
+
+    private User chooseUserForPv() throws IOException {
+        String name = reader.readUTF();
+        for (User user : users) {
+            if (user.getUserName().equals(name)) {
+                return user;
+            }
+        }
+        return null;
+    }
+
+    private String showAllUsers() {
+        StringBuilder res = new StringBuilder();
+        for (User user : users) {
+            res.append(user.getUserName()).append("\n");
+        }
+        return String.valueOf(res);
+    }
+
     private void showAllMessages() throws IOException {
-        System.out.println(messages.size());
-        for(Message tmpMessage : messages)
-        {
+        for (Message tmpMessage : messages) {
             showNewMessage(tmpMessage);
         }
     }
+
     private void addMessage(String content) throws IOException {
         synchronized (messages) {
             messages.add(new Message(content, LocalDateTime.now(), this, null));
@@ -81,6 +130,7 @@ public class User extends Thread
             }
         }
     }
+
     private void addWhisper(String content, String recieverUsername) throws IOException {
         synchronized (messages) {
             User reciever = users.stream().filter(user -> user.getUserName().equals(recieverUsername))
@@ -95,9 +145,9 @@ public class User extends Thread
             }
         }
     }
-    public void showNewMessage(Message newMessage) throws IOException
-    {
-        if(newMessage.getReciever() == null || newMessage.getReciever().equals(this))
+
+    public void showNewMessage(Message newMessage) throws IOException {
+        if (newMessage.getReciever() == null || newMessage.getReciever().equals(this))
             writer.writeUTF(newMessage.toString());
         else
             writer.writeUTF("whisper for " + newMessage.getReciever().getUserName() + "\n");

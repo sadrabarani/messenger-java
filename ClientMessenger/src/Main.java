@@ -47,10 +47,8 @@ class Client {
             socket.close();
             out.close();
             serverInput.close();
-            senderThread.interrupt();
-            recieverThread.interrupt();
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -58,7 +56,6 @@ class Client {
         try {
             long startTime = System.currentTimeMillis();
             output.writeUTF("ping");
-            String response = serverInput.readUTF();
             long endTime = System.currentTimeMillis();
             return endTime - startTime;
         } catch (IOException e) {
@@ -110,13 +107,13 @@ class SendMessege extends Client implements Runnable {
                     break;
                 } else if (str.equals("ping")) {
                     long roundTripTime = ping(getOut(), getServerInput());
-                    System.out.println("ping: " + roundTripTime + " ms");
-                }else{
+                    System.out.println(roundTripTime + " ms");
+                } else {
                     getOut().writeUTF(str);
                 }
             }
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -23,6 +23,6 @@ public class Message {
     @Override
     public String toString()
     {
-        return this.content + " - " + this.dateTime.toString() + " - by " + this.sender.getUserName();
+        return this.content + " - " + this.dateTime.toString() + " - by " + this.sender.getUserName() + "\n";
     }
 }

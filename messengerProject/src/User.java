@@ -10,16 +10,18 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-public class User extends Thread {
-    private static ArrayList<Message> messages;
-    private static ArrayList<User> users;
+public class User extends Thread
+{
+    private ArrayList<Message> messages;
+    private ArrayList<User> users;
     private String userName;
     private Socket connection;
     private DataInputStream reader;
     private DataOutputStream writer;
     private boolean isActive;
 
-    public User(Socket connection, String name) throws IOException {
+    public User(Socket connection, String name) throws IOException
+    {
         this.userName = name;
         this.connection = connection;
         this.reader = new DataInputStream(connection.getInputStream());
@@ -27,12 +29,12 @@ public class User extends Thread {
         this.messages = Server.messages;
         this.users = Server.users;
         this.isActive = true;
-        users.add(this);
-        writer.writeUTF(showAllMessages());
+        showAllMessages();
     }
 
     @Override
-    public void run() {
+    public void run()
+    {
         try {
             String prompt = reader.readUTF();
             while (!prompt.equals("exit")) {
@@ -40,10 +42,10 @@ public class User extends Thread {
                 String[] promptsArray = prompt.split(" -");
                 switch (promptsArray[0]) {
                     case "newMessage":
-                        addMessage(prompt);
+                        addMessage(promptsArray[1]);
                         break;
                     case "newWhisper":
-                        addWhisper();
+                        addWhisper(promptsArray[1], promptsArray[2]);
                         break;
                     default:
                         writer.writeUTF("Invalid format");
@@ -55,33 +57,49 @@ public class User extends Thread {
             isActive = false;
             connection.close();
             interrupt();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        }
+        catch (IOException exception)
+        {
+            exception.printStackTrace();
         }
     }
 
-    private String showAllMessages() {
-        return "All messages";
+    private void showAllMessages() throws IOException {
+        for(Message tmpMessage : messages)
+        {
+            showNewMessage(tmpMessage);
+        }
     }
-
-    private void addMessage(String prompt) throws IOException {
-        messages.add(new Message(prompt, LocalDateTime.now(),this,null));
-        for (User user:users){
-            if (!user.equals(this)){
-                user.writer.writeUTF(prompt);
+    private void addMessage(String content) throws IOException {
+        synchronized (messages) {
+            messages.add(new Message(content, LocalDateTime.now(), this, null));
+            for (User tmpUser : users) {
+                synchronized (tmpUser) {
+                    tmpUser.showNewMessage(messages.getLast());
+                }
             }
         }
     }
-
-    private void addWhisper() {
-
+    private void addWhisper(String content, String recieverUsername) throws IOException {
+        synchronized (messages) {
+            User reciever = users.stream().filter(user -> user.getUserName().equals(recieverUsername))
+                    .findFirst().orElse(null);
+            if (reciever != null) {
+                messages.add(new Message(content, LocalDateTime.now(), this, reciever));
+                for (User tmpUser : users) {
+                    synchronized (tmpUser) {
+                        tmpUser.showNewMessage(messages.getLast());
+                    }
+                }
+            }
+        }
     }
-
-    public void showNewMessage(Message newMessage) throws IOException {
-        if (newMessage.getReciever() == null || newMessage.getReciever().equals(this))
+    public void showNewMessage(Message newMessage) throws IOException
+    {
+        if(newMessage.getReciever() == null || newMessage.getReciever().equals(this))
             writer.writeUTF(newMessage.toString());
         else
-            writer.writeUTF("whisper for " + newMessage.getReciever().getUserName());
+            writer.writeUTF("whisper for " + newMessage.getReciever().getUserName() + "\n");
     }
 
 }

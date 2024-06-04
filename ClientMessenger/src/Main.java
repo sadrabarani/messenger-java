@@ -130,10 +130,12 @@ class ReceiveMessege extends Client implements Runnable {
 
     @Override
     public void run() {
-        try {
-            System.out.println(getServerInput().readUTF());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        while (true) {
+            try {
+                System.out.println(getServerInput().readUTF());
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

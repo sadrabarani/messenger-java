@@ -65,6 +65,7 @@ public class User extends Thread
     }
 
     private void showAllMessages() throws IOException {
+        System.out.println(messages.size());
         for(Message tmpMessage : messages)
         {
             showNewMessage(tmpMessage);

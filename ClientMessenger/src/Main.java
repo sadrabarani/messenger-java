@@ -104,7 +104,6 @@ class SendMessege extends Client implements Runnable {
             while (true) {
                 Scanner scanner = new Scanner(System.in);
                 String str = scanner.nextLine();
-                getOut().writeUTF(str);
                 if (str.equals("exit")) {
                     getOut().writeUTF(str);
                     closeEveryThing();
@@ -112,6 +111,8 @@ class SendMessege extends Client implements Runnable {
                 } else if (str.equals("ping")) {
                     long roundTripTime = ping(getOut(), getServerInput());
                     System.out.println("ping: " + roundTripTime + " ms");
+                }else{
+                    getOut().writeUTF(str);
                 }
             }
         } catch (IOException e) {

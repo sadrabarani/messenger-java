@@ -11,8 +11,8 @@ import java.util.ArrayList;
 @Getter
 @Setter
 public class User extends Thread {
-    private ArrayList<Message> messages;
-    private ArrayList<User> users;
+    private static ArrayList<Message> messages;
+    private static ArrayList<User> users;
     private String userName;
     private Socket connection;
     private DataInputStream reader;

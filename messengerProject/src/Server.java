@@ -17,7 +17,6 @@ public class Server {
         while(true)
         {
             Socket connection = serverSocket.accept();
-            System.out.println("some one connect");
             DataInputStream reader = new DataInputStream(connection.getInputStream());
             DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
             String name = reader.readUTF();

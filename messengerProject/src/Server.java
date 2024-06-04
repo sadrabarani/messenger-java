@@ -13,10 +13,11 @@ public class Server {
     public static ArrayList<User> users = new ArrayList<User>();
     public static void main(String[] args) throws IOException
     {
+        ServerSocket serverSocket = new ServerSocket(8080);
         while(true)
         {
-            ServerSocket serverSocket = new ServerSocket(8080);
             Socket connection = serverSocket.accept();
+            System.out.println("some one connect");
             DataInputStream reader = new DataInputStream(connection.getInputStream());
             DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
             String name = reader.readUTF();
@@ -32,13 +33,13 @@ public class Server {
                 User newUser = new User(connection, name);
                 users.add(newUser);
                 writer.writeUTF("Connected!");
-                newUser.run();
+                newUser.start();
             }
             else
             {
                 searchedUser.setActive(true);
                 writer.writeUTF("Connected!");
-                searchedUser.run();
+                searchedUser.start();
             }
             connection.close();
         }

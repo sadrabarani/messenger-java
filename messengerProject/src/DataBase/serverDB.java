@@ -25,29 +25,37 @@ public class serverDB {
     }
 
     public String searchByTime(LocalDateTime startTime, LocalDateTime endTime) {
-        String sqlCmd= String.format();
+        String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE dateTime BETWEEN '" + startTime + "' AND '" + startTime + "'");
         return exeQuery(sqlCmd);
     }
 
     public String searchByName(String userName) {
-        String sqlCmd= String.format("SELECT sender, receiver, content, dataTime FROM programmers WHERE sender = '%s'", userName);
+        String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE sender = '%s'", userName);
         return exeQuery(sqlCmd);
     }
 
     public String showAllChatRoomMessage() {
-        String sqlCmd= String.format();
+        String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE contentType = '%s'", "chatRoom");
         return exeQuery(sqlCmd);
     }
 
     public String showAllPvMessage(String userName) {
-        String sqlCmd= String.format();
+        String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE sender = '%s' AND contentType = '%s'", userName, "pv");
         return exeQuery(sqlCmd);
     }
 
-    public String clearPvHistory(String userName) {
-
+    public void clearPvHistory(String userName) {
+        String sqlCmd = String.format("DELETE FROM messages WHERE (sender = '%s' OR receiver = '%s') AND contentType = '%s'", userName, userName, "pv");
+        try {
+            Statement statement = dbManager.getConnection().createStatement();
+            int rowsAffected = statement.executeUpdate(sqlCmd);
+            System.out.println("Rows affected: " + rowsAffected);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
-    public String exeQuery(String sqlCmd){
+
+    public String exeQuery(String sqlCmd) {
         StringBuilder res = new StringBuilder();
         try {
             Connection conn = dbManager.getConnection();
@@ -55,7 +63,8 @@ public class serverDB {
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
                     res.append("Sender: " + rs.getString("sender") + ", reciever: " + rs.getString("receiver")
-                            + ", content: " + rs.getString("content") + ", date Time: " + rs.getDate("dateTime")+"\n");
+                            + ", content: " + rs.getString("content") + ", date Time: " + rs.getDate("dateTime")
+                            + rs.getString("contentType") + "\n");
                 }
             }
         } catch (SQLException e) {
@@ -63,6 +72,7 @@ public class serverDB {
         }
         return String.valueOf(res);
     }
+
     public void exeDB(String sqlCmd) throws SQLException {
         Connection conn = dbManager.getConnection();
         Statement statement = conn.prepareStatement(sqlCmd);

@@ -12,12 +12,13 @@ public class Message {
     private LocalDateTime dateTime;
     private User sender;
     private User reciever;
-
-    public Message(String content, LocalDateTime dateTime, User sender, User reciever) {
+    private int type; // either 0 = chatroom message or 1 = pv message
+    public Message(String content, LocalDateTime dateTime, User sender, User reciever, int type) {
         this.content = content;
         this.dateTime = dateTime;
         this.sender = sender;
         this.reciever = reciever;
+        this.type = type;
     }
 
     @Override

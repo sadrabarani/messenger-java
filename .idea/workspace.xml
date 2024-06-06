@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c32396d5-2b5d-4c7c-a251-54067ebd9abf" name="Changes" comment="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint">
+    <list default="true" id="c32396d5-2b5d-4c7c-a251-54067ebd9abf" name="Changes" comment="Update PV messages">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messengerProject/src/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/Message.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messengerProject/src/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messengerProject/src/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/user/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +88,7 @@
       <workItem from="1717521468081" duration="1917000" />
       <workItem from="1717580031597" duration="768000" />
       <workItem from="1717617261223" duration="693000" />
-      <workItem from="1717709434457" duration="3197000" />
+      <workItem from="1717709434457" duration="4941000" />
     </task>
     <task id="LOCAL-00001" summary="Initial server commit">
       <option name="closed" value="true" />
@@ -107,15 +106,36 @@
       <option name="project" value="LOCAL" />
       <updated>1717439327507</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Update PV messages">
+      <option name="closed" value="true" />
+      <created>1717712666341</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1717712666341</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Initial server commit" />
     <MESSAGE value="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint" />
+    <MESSAGE value="Update PV messages" />
+    <MESSAGE value="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint&#10;&#10;# Conflicts:&#10;#&#9;messengerProject/src/user/User.java" />
+    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint&#10;&#10;# Conflicts:&#10;#&#9;messengerProject/src/user/User.java" />
   </component>
 </project>

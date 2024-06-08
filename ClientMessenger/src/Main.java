@@ -15,7 +15,6 @@ public class Main {
     }
 }
 
-
 class Client {
     private String userName;
     private static Socket socket;
@@ -23,6 +22,7 @@ class Client {
     private static DataInputStream serverInput;
     private Thread senderThread;
     private Thread receiverThread;
+    private volatile boolean running = true;
 
     public Client(String userName) {
         this.userName = userName;
@@ -34,15 +34,16 @@ class Client {
         setOut(new DataOutputStream(getSocket().getOutputStream()));
         setServerInput(new DataInputStream(getSocket().getInputStream()));
         out.writeUTF(userName);
-        SendMessege send = new SendMessege(userName);
+        SendMessege send = new SendMessege(userName, this);
         senderThread = new Thread(send);
         senderThread.start();
-        ReceiveMessege receive = new ReceiveMessege(userName);
+        ReceiveMessege receive = new ReceiveMessege(userName, this);
         receiverThread = new Thread(receive);
         receiverThread.start();
     }
 
-    public void closeEveryThing() {
+    public void closeEverything() {
+        running = false;
         try {
             socket.close();
             out.close();
@@ -87,23 +88,29 @@ class Client {
     public DataInputStream getServerInput() {
         return serverInput;
     }
+
+    public boolean isRunning() {
+        return running;
+    }
 }
 
 class SendMessege extends Client implements Runnable {
+    private Client client;
 
-    public SendMessege(String userName) throws IOException {
+    public SendMessege(String userName, Client client) throws IOException {
         super(userName);
+        this.client = client;
     }
 
     @Override
     public void run() {
         try {
-            while (true) {
+            while (client.isRunning()) {
                 Scanner scanner = new Scanner(System.in);
                 String str = scanner.nextLine();
                 if (str.equals("exit")) {
                     getOut().writeUTF(str);
-                    closeEveryThing();
+                    client.closeEverything();
                     break;
                 } else if (str.equals("ping")) {
                     long roundTripTime = ping(getOut(), getServerInput());
@@ -120,18 +127,25 @@ class SendMessege extends Client implements Runnable {
 
 
 class ReceiveMessege extends Client implements Runnable {
+    private Client client;
 
-    public ReceiveMessege(String userName) throws IOException {
+    public ReceiveMessege(String userName, Client client) throws IOException {
         super(userName);
+        this.client = client;
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (client.isRunning()) {
             try {
                 System.out.println(getServerInput().readUTF());
             } catch (IOException e) {
-                System.out.println(e.getMessage());
+                if (!client.isRunning()) {
+                    System.out.println("Connection closed.");
+                } else {
+                    e.printStackTrace();
+                }
+                break;
             }
         }
     }

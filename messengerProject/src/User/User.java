@@ -3,6 +3,7 @@ package User;
 import lombok.Getter;
 import lombok.Setter;
 import Message.Message;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import DataBase.ServerDB;
+
 @Getter
 @Setter
 public class User extends Thread {
@@ -27,8 +29,9 @@ public class User extends Thread {
     private DataOutputStream writer;
     private boolean isActive;
     private User inPvUser;
-    
+
     public User(Socket connection, String name, boolean isActive) throws IOException {
+        this.database = Server.database;
         this.inPvUser = null;
         this.userName = name;
         this.connection = connection;
@@ -36,10 +39,11 @@ public class User extends Thread {
         this.writer = new DataOutputStream(connection.getOutputStream());
         this.messages = Server.messages;
         this.users = Server.users;
-        for(Block tmpBlock : Server.blocks) if(tmpBlock.getBlocker().equals(this.getUserName()))
-        {
-            blockList.add(database.getUserByUsername(tmpBlock.getBlocked()));
-        }
+        blockList = new ArrayList<>();
+        for (Block tmpBlock : Server.blocks)
+            if (tmpBlock.getBlocker().equals(this.getUserName())) {
+                blockList.add(database.getUserByUsername(tmpBlock.getBlocked()));
+            }
         this.isActive = isActive;
         showAllMessages();
     }
@@ -89,13 +93,10 @@ public class User extends Thread {
     }
 
     private void searchMessages(String searchQuery) throws IOException {
-        String[] searchArray = searchQuery.split(" -");
-        if(searchArray.length == 1)
-        {
+        String[] searchArray = searchQuery.split(" ");
+        if (searchArray.length == 1) {
             writer.writeUTF(database.searchByName(searchArray[0]));
-        }
-        else
-        {
+        } else {
             String[] startTimeArray = searchArray[0].split(":");
             String[] endTimeArray = searchArray[2].split(":");
             LocalDateTime startDateTime = LocalDateTime.of(LocalDate.now(),
@@ -111,6 +112,7 @@ public class User extends Thread {
     private void showAllPvMessages() throws IOException {
         writer.writeUTF(database.showAllPvMessage(this.getUserName(), inPvUser.getUserName()));
     }
+
     private void pvCmd() throws IOException {
         String prompt = reader.readUTF();
         while (!prompt.equals("finish")) {
@@ -132,26 +134,25 @@ public class User extends Thread {
             }
             prompt = reader.readUTF();
         }
+        inPvUser.inPvUser = null;
         inPvUser = null;
         showAllMessages(); // showing all the chatroom messages after quiting the pv
     }
 
 
-    private void blockUser()
-    {
+    private void blockUser() {
         synchronized (blockList) {
             blockList.add(inPvUser);
             database.addBlockToDB(new Block(this.userName, inPvUser.getUserName()));
         }
     }
-    private void clearHistory()
-    {
+
+    private void clearHistory() {
         database.clearPvHistory(this.userName, this.inPvUser.getUserName());
     }
 
     private void pvNewMessage(String content) throws IOException {
-        if(inPvUser.blockList.contains(this))
-        {
+        if (inPvUser.blockList.contains(this)) {
             writer.writeUTF("You are blocked by this user!");
             return;
         }
@@ -159,7 +160,7 @@ public class User extends Thread {
             messages.add(new Message(content, LocalDateTime.now(), this, inPvUser, 1));
             database.writeMessageInDB(messages.getLast());
             synchronized (inPvUser) {
-                inPvUser.writer.writeUTF(messages.toString());
+                inPvUser.writer.writeUTF(content);
             }
         }
     }
@@ -169,6 +170,7 @@ public class User extends Thread {
         for (User user : users) {
             if (user.getUserName().equals(name)) {
                 this.inPvUser = user;
+                user.inPvUser = this;
                 return user;
             }
         }
@@ -191,11 +193,15 @@ public class User extends Thread {
         synchronized (messages) {
             messages.add(new Message(content, LocalDateTime.now(), this, null, 0));
             database.writeMessageInDB(messages.getLast());
-            for (User tmpUser : users) if(tmpUser.inPvUser != null) {
-                synchronized (tmpUser) {
-                    tmpUser.showNewMessage(messages.getLast());
+            for (User tmpUser : users)
+                if (tmpUser.inPvUser == null) {
+                    if (!tmpUser.equals(this)) {
+                        synchronized (tmpUser) {
+                            System.out.println(tmpUser.getUserName());
+                            tmpUser.showNewMessage(messages.getLast());
+                        }
+                    }
                 }
-            }
         }
     }
 
@@ -206,11 +212,12 @@ public class User extends Thread {
             if (receiver != null) {
                 messages.add(new Message(content, LocalDateTime.now(), this, receiver, 0));
                 database.writeMessageInDB(messages.getLast());
-                for (User tmpUser : users) if(tmpUser.inPvUser != null) {
-                    synchronized (tmpUser) {
-                        tmpUser.showNewMessage(messages.getLast());
+                for (User tmpUser : users)
+                    if (tmpUser.inPvUser == null) {
+                        synchronized (tmpUser) {
+                            tmpUser.showNewMessage(messages.getLast());
+                        }
                     }
-                }
             }
         }
     }

@@ -16,14 +16,14 @@ public class Server {
     public static ArrayList<User> users = new ArrayList<>();
     public static ArrayList<Message> messages = new ArrayList<>();
     public static ArrayList<Block> blocks = new ArrayList<>();
+    public static ServerDB database = new ServerDB();
     public static void main(String[] args) throws IOException
     {
-        ServerDB database = new ServerDB();
         ArrayList<String> usernames = database.getUsernames();
-        for(String username : usernames)
-        {
-            users.add(new User(null, username, false));
-        }
+//        for(String username : usernames)
+//        {
+//            users.add(new User(null, username, false));
+//        }
         messages = database.getMessages();
         blocks = database.getBlocks();
         ServerSocket serverSocket = new ServerSocket(8080);

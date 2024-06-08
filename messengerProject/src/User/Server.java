@@ -1,7 +1,6 @@
-package user;
+package User;
 
-import message.Message;
-import user.User;
+import Message.Message;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

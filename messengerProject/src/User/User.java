@@ -1,8 +1,8 @@
-package user;
+package User;
 
 import lombok.Getter;
 import lombok.Setter;
-import message.Message;
+import Message.Message;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,10 +11,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import DataBase.serverDB;
+import DataBase.ServerDB;
 @Getter
 @Setter
 public class User extends Thread {
+    private ServerDB database;
     private ArrayList<Message> messages;
     private ArrayList<User> users;
     private ArrayList<User> blockList;
@@ -68,7 +69,7 @@ public class User extends Thread {
                         String[] searchArray = searchQuery.split(" -");
                         if(searchArray.length == 1)
                         {
-                            writer.writeUTF(searchByName(searchArray[0]));
+                            writer.writeUTF(database.searchByName(searchArray[0]));
                         }
                         else
                         {
@@ -80,7 +81,7 @@ public class User extends Thread {
                             LocalDateTime endDateTime = LocalDateTime.of(LocalDate.now(),
                                     LocalTime.of(Integer.parseInt(endTimeArray[0]), Integer.parseInt(endTimeArray[1]), Integer.parseInt(endTimeArray[2]), 0));
 
-                            writer.writeUTF(searchByTime(startDateTime, endDateTime));
+                            writer.writeUTF(database.searchByTime(startDateTime, endDateTime));
                         }
                         break;
                     default:

@@ -1,8 +1,8 @@
-package message;
+package Message;
 
 import lombok.Getter;
 import lombok.Setter;
-import user.User;
+import User.User;
 
 import java.time.LocalDateTime;
 

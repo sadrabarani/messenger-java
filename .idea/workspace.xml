@@ -4,11 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c32396d5-2b5d-4c7c-a251-54067ebd9abf" name="Changes" comment="Update PV messages">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+    <list default="true" id="c32396d5-2b5d-4c7c-a251-54067ebd9abf" name="Changes" comment="Add search functionality to chatroom">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messengerProject/src/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/user/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messengerProject/src/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/user/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messengerProject/src/DataBase/serverDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/DataBase/ServerDB.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messengerProject/src/message/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/Message/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messengerProject/src/user/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/User/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messengerProject/src/user/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/User/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +93,7 @@
       <workItem from="1717580031597" duration="768000" />
       <workItem from="1717617261223" duration="693000" />
       <workItem from="1717709434457" duration="4941000" />
-      <workItem from="1717853681533" duration="2397000" />
+      <workItem from="1717853681533" duration="2892000" />
     </task>
     <task id="LOCAL-00001" summary="Initial server commit">
       <option name="closed" value="true" />
@@ -118,7 +119,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717712666341</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Add search functionality to chatroom">
+      <option name="closed" value="true" />
+      <created>1717856293053</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1717856293053</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -140,6 +149,7 @@
     <MESSAGE value="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint" />
     <MESSAGE value="Update PV messages" />
     <MESSAGE value="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint&#10;&#10;# Conflicts:&#10;#&#9;messengerProject/src/user/User.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint&#10;&#10;# Conflicts:&#10;#&#9;messengerProject/src/user/User.java" />
+    <MESSAGE value="Add search functionality to chatroom" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add search functionality to chatroom" />
   </component>
 </project>

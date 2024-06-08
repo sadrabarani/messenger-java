@@ -1,15 +1,14 @@
 package DataBase;
 
-import user.*;
-import message.*;
+import Message.*;
 
 import java.sql.*;
 import java.time.LocalDateTime;
 
-public class serverDB {
+public class ServerDB {
     private DatabaseManager dbManager;
 
-    public serverDB() {
+    public ServerDB() {
         dbManager = new DatabaseManager();
     }
 

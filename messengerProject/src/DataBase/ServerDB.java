@@ -24,6 +24,19 @@ public class ServerDB {
         }
     }
 
+    public String addBlockToDB(Block block)
+    {
+        String sqlCom = String.format("INSERT INTO `blocks` (`blocker`, `blocked`) VALUES ('%s','%s')", block.getBlocker(), block.getBlocked());
+        try
+        {
+            exeDB(sqlCom);
+            return "add succesful";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
     public String addUserToDB(String username) {
         String sqlCom = String.format("INSERT INTO `users` (`name`) VALUES ('%s')", username);
         try
@@ -87,6 +100,7 @@ public class ServerDB {
         return String.valueOf(res);
     }
 
+
     public ArrayList<String> getUsernames() {
         ArrayList<String> usernames = new ArrayList<>();
         String sqlCmd = "SELECT name FROM users";
@@ -140,6 +154,31 @@ public class ServerDB {
             e.printStackTrace();
         }
         return allMessages;
+    }
+
+    public ArrayList<Block> getBlocks()
+    {
+        ArrayList<Block> allBlocks = new ArrayList<>();
+        String sqlCmd = "SELECT * FROM blocks";
+
+        try {
+            Connection conn = dbManager.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlCmd);
+            try (ResultSet rs = preparedStatement.executeQuery())
+            {
+                while (rs.next())
+                {
+
+                    String blocker = rs.getString("blocker");
+                    String blocked = rs.getString("blocked");
+                    allBlocks.add(new Block(blocker, blocked));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allBlocks;
     }
 
     public void exeDB(String sqlCmd) throws SQLException {

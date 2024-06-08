@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c32396d5-2b5d-4c7c-a251-54067ebd9abf" name="Changes" comment="fixed database transactions on user client">
+    <list default="true" id="c32396d5-2b5d-4c7c-a251-54067ebd9abf" name="Changes" comment="Add database add user functionality">
+      <change afterPath="$PROJECT_DIR$/messengerProject/src/User/Block.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messengerProject/src/DataBase/ServerDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/DataBase/ServerDB.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messengerProject/src/User/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/User/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/messengerProject/src/User/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/User/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,7 +95,7 @@
       <workItem from="1717709434457" duration="4941000" />
       <workItem from="1717853681533" duration="5459000" />
       <workItem from="1717865902683" duration="632000" />
-      <workItem from="1717869691648" duration="5567000" />
+      <workItem from="1717869691648" duration="7026000" />
     </task>
     <task id="LOCAL-00001" summary="Initial server commit">
       <option name="closed" value="true" />
@@ -151,7 +153,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717874447386</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Add database add user functionality">
+      <option name="closed" value="true" />
+      <created>1717876217288</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1717876217288</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -177,6 +187,7 @@
     <MESSAGE value="Fixed naming and package errors" />
     <MESSAGE value="Add getUsers and getMessages functions in database for primary initialization" />
     <MESSAGE value="fixed database transactions on user client" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed database transactions on user client" />
+    <MESSAGE value="Add database add user functionality" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add database add user functionality" />
   </component>
 </project>

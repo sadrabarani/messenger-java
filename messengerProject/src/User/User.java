@@ -11,6 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import DataBase.ServerDB;
 @Getter
 @Setter
@@ -34,7 +36,10 @@ public class User extends Thread {
         this.writer = new DataOutputStream(connection.getOutputStream());
         this.messages = Server.messages;
         this.users = Server.users;
-        this.blockList = new ArrayList<>(); // todo : get from database
+        for(Block tmpBlock : Server.blocks) if(tmpBlock.getBlocker().equals(this.getUserName()))
+        {
+            blockList.add(database.getUserByUsername(tmpBlock.getBlocked()));
+        }
         this.isActive = isActive;
         showAllMessages();
     }
@@ -134,10 +139,9 @@ public class User extends Thread {
 
     private void blockUser()
     {
-        // todo : block in database
-        // todo : add user to database
         synchronized (blockList) {
             blockList.add(inPvUser);
+            database.addBlockToDB(new Block(this.userName, inPvUser.getUserName()));
         }
     }
     private void clearHistory()

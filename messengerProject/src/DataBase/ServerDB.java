@@ -24,6 +24,20 @@ public class ServerDB {
         }
     }
 
+    public String addUserToDB(String username) {
+        String sqlCom = String.format("INSERT INTO `users` (`name`) VALUES ('%s')", username);
+        try
+        {
+            exeDB(sqlCom);
+            return "add succesful";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "error";
+        }
+    }
+
+
+
     public String searchByTime(LocalDateTime startTime, LocalDateTime endTime) {
         String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE dateTime BETWEEN '" + startTime + "' AND '" + startTime + "'");
         return exeQuery(sqlCmd);

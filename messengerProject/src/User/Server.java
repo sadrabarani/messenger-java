@@ -42,6 +42,7 @@ public class Server {
             {
                 User newUser = new User(connection, name, true);
                 users.add(newUser);
+                database.addUserToDB(newUser.getUserName());
                 writer.writeUTF("Connected!");
                 newUser.start();
             }

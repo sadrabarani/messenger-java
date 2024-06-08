@@ -35,17 +35,17 @@ public class ServerDB {
     }
 
     public String showAllChatRoomMessage() {
-        String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE contentType = '%s'", "chatRoom");
+        String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE contentType = '%s'", 0);
         return exeQuery(sqlCmd);
     }
 
-    public String showAllPvMessage(String userName) {
-        String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE sender = '%s' AND contentType = '%s'", userName, "pv");
+    public String showAllPvMessage(String sender, String receiver) {
+        String sqlCmd = String.format("SELECT sender, receiver, content, dataTime, contentType FROM messages WHERE sender = '%s' AND receiver = '%s' AND contentType = '%s'", sender, receiver, 1);
         return exeQuery(sqlCmd);
     }
 
-    public void clearPvHistory(String userName) {
-        String sqlCmd = String.format("DELETE FROM messages WHERE (sender = '%s' OR receiver = '%s') AND contentType = '%s'", userName, userName, "pv");
+    public void clearPvHistory(String sender, String receiver) {
+        String sqlCmd = String.format("DELETE FROM messages WHERE (sender = '%s' OR receiver = '%s') AND contentType = '%s'", sender, receiver, 1);
         try {
             Statement statement = dbManager.getConnection().createStatement();
             int rowsAffected = statement.executeUpdate(sqlCmd);

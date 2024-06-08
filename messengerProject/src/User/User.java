@@ -26,16 +26,16 @@ public class User extends Thread {
     private boolean isActive;
     private User inPvUser;
     
-    public User(Socket connection, String name) throws IOException {
+    public User(Socket connection, String name, boolean isActive) throws IOException {
         this.inPvUser = null;
         this.userName = name;
         this.connection = connection;
         this.reader = new DataInputStream(connection.getInputStream());
         this.writer = new DataOutputStream(connection.getOutputStream());
-        /*this.messages = new ArrayList<>(); // todo : get from database
-        this.users = new ArrayList<>(); // todo : get from database
-        this.blockList = new ArrayList<>(); // todo : get from database*/
-        this.isActive = true;
+        this.messages = Server.messages;
+        this.users = Server.users;
+        this.blockList = new ArrayList<>(); // todo : get from database
+        this.isActive = isActive;
         showAllMessages();
     }
 
@@ -66,23 +66,7 @@ public class User extends Thread {
                         break;
                     case "search":
                         String searchQuery = reader.readUTF();
-                        String[] searchArray = searchQuery.split(" -");
-                        if(searchArray.length == 1)
-                        {
-                            writer.writeUTF(database.searchByName(searchArray[0]));
-                        }
-                        else
-                        {
-                            String[] startTimeArray = searchArray[0].split(":");
-                            String[] endTimeArray = searchArray[2].split(":");
-                            LocalDateTime startDateTime = LocalDateTime.of(LocalDate.now(),
-                                    LocalTime.of(Integer.parseInt(startTimeArray[0]), Integer.parseInt(startTimeArray[1]), Integer.parseInt(startTimeArray[2]), 0));
-
-                            LocalDateTime endDateTime = LocalDateTime.of(LocalDate.now(),
-                                    LocalTime.of(Integer.parseInt(endTimeArray[0]), Integer.parseInt(endTimeArray[1]), Integer.parseInt(endTimeArray[2]), 0));
-
-                            writer.writeUTF(database.searchByTime(startDateTime, endDateTime));
-                        }
+                        searchMessages(searchQuery);
                         break;
                     default:
                         writer.writeUTF("Invalid format");
@@ -99,13 +83,28 @@ public class User extends Thread {
         }
     }
 
+    private void searchMessages(String searchQuery) throws IOException {
+        String[] searchArray = searchQuery.split(" -");
+        if(searchArray.length == 1)
+        {
+            writer.writeUTF(database.searchByName(searchArray[0]));
+        }
+        else
+        {
+            String[] startTimeArray = searchArray[0].split(":");
+            String[] endTimeArray = searchArray[2].split(":");
+            LocalDateTime startDateTime = LocalDateTime.of(LocalDate.now(),
+                    LocalTime.of(Integer.parseInt(startTimeArray[0]), Integer.parseInt(startTimeArray[1]), Integer.parseInt(startTimeArray[2]), 0));
+
+            LocalDateTime endDateTime = LocalDateTime.of(LocalDate.now(),
+                    LocalTime.of(Integer.parseInt(endTimeArray[0]), Integer.parseInt(endTimeArray[1]), Integer.parseInt(endTimeArray[2]), 0));
+
+            writer.writeUTF(database.searchByTime(startDateTime, endDateTime));
+        }
+    }
 
     private void showAllPvMessages() throws IOException {
-        for(Message tmpMessage : messages)
-            if(tmpMessage.getType() == 1 && tmpMessage.getReceiver().equals(inPvUser))
-            {
-                showNewMessage(tmpMessage);
-            }
+        writer.writeUTF(database.showAllPvMessage(this.getUserName(), inPvUser.getUserName()));
     }
     private void pvCmd() throws IOException {
         String prompt = reader.readUTF();
@@ -135,24 +134,15 @@ public class User extends Thread {
 
     private void blockUser()
     {
+        // todo : block in database
+        // todo : add user to database
         synchronized (blockList) {
             blockList.add(inPvUser);
         }
     }
     private void clearHistory()
     {
-        synchronized (messages)
-        {
-            for(Message tmpMessage : messages)
-            {
-                if(tmpMessage.getType() == 1 && tmpMessage.getReceiver().equals(inPvUser))
-                {
-                    synchronized (tmpMessage) {
-                        messages.remove(tmpMessage);
-                    }
-                }
-            }
-        }
+        database.clearPvHistory(this.userName, this.inPvUser.getUserName());
     }
 
     private void pvNewMessage(String content) throws IOException {
@@ -163,6 +153,7 @@ public class User extends Thread {
         }
         synchronized (messages) {
             messages.add(new Message(content, LocalDateTime.now(), this, inPvUser, 1));
+            database.writeMessageInDB(messages.getLast());
             synchronized (inPvUser) {
                 inPvUser.writer.writeUTF(messages.toString());
             }
@@ -210,6 +201,7 @@ public class User extends Thread {
                     .findFirst().orElse(null);
             if (receiver != null) {
                 messages.add(new Message(content, LocalDateTime.now(), this, receiver, 0));
+                database.writeMessageInDB(messages.getLast());
                 for (User tmpUser : users) if(tmpUser.inPvUser != null) {
                     synchronized (tmpUser) {
                         tmpUser.showNewMessage(messages.getLast());

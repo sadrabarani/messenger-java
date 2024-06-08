@@ -14,15 +14,16 @@ public class Server {
 
 
     public static ArrayList<User> users = new ArrayList<>();
-    public static ArrayList<User> messages = new ArrayList<>();
+    public static ArrayList<Message> messages = new ArrayList<>();
     public static void main(String[] args) throws IOException
     {
         ServerDB database = new ServerDB();
         ArrayList<String> usernames = database.getUsernames();
         for(String username : usernames)
         {
-            users.add(new User(null, username));
+            users.add(new User(null, username, false));
         }
+        messages = database.getMessages();
         ServerSocket serverSocket = new ServerSocket(8080);
         while(true)
         {
@@ -39,7 +40,7 @@ public class Server {
             }
             if(searchedUser == null)
             {
-                User newUser = new User(connection, name);
+                User newUser = new User(connection, name, true);
                 users.add(newUser);
                 writer.writeUTF("Connected!");
                 newUser.start();

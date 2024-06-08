@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c32396d5-2b5d-4c7c-a251-54067ebd9abf" name="Changes" comment="Fixed naming and package errors">
+    <list default="true" id="c32396d5-2b5d-4c7c-a251-54067ebd9abf" name="Changes" comment="Add getUsers and getMessages functions in database for primary initialization">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ClientMessenger/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/ClientMessenger/src/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messengerProject/src/DataBase/ServerDB.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/DataBase/ServerDB.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/messengerProject/src/Message/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/Message/Message.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messengerProject/src/User/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/User/Server.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/messengerProject/src/User/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/messengerProject/src/User/User.java" afterDir="false" />
     </list>
@@ -96,7 +94,7 @@
       <workItem from="1717709434457" duration="4941000" />
       <workItem from="1717853681533" duration="5459000" />
       <workItem from="1717865902683" duration="632000" />
-      <workItem from="1717869691648" duration="2600000" />
+      <workItem from="1717869691648" duration="4723000" />
     </task>
     <task id="LOCAL-00001" summary="Initial server commit">
       <option name="closed" value="true" />
@@ -138,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717856785651</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Add getUsers and getMessages functions in database for primary initialization">
+      <option name="closed" value="true" />
+      <created>1717872388270</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1717872388270</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,6 +168,7 @@
     <MESSAGE value="Merge remote-tracking branch 'origin/firstCheckPoint' into firstCheckPoint&#10;&#10;# Conflicts:&#10;#&#9;messengerProject/src/user/User.java" />
     <MESSAGE value="Add search functionality to chatroom" />
     <MESSAGE value="Fixed naming and package errors" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed naming and package errors" />
+    <MESSAGE value="Add getUsers and getMessages functions in database for primary initialization" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add getUsers and getMessages functions in database for primary initialization" />
   </component>
 </project>

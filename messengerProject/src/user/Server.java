@@ -1,3 +1,5 @@
+package user;
+
 import message.Message;
 import user.User;
 

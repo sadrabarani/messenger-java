@@ -3,15 +3,15 @@ package user;
 import lombok.Getter;
 import lombok.Setter;
 import message.Message;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
-
-
+import DataBase.serverDB;
 @Getter
 @Setter
 public class User extends Thread {
@@ -61,6 +61,26 @@ public class User extends Thread {
                         if (secUser != null) {
                             showAllPvMessages();
                             pvCmd();
+                        }
+                        break;
+                    case "search":
+                        String searchQuery = reader.readUTF();
+                        String[] searchArray = searchQuery.split(" -");
+                        if(searchArray.length == 1)
+                        {
+                            writer.writeUTF(searchByName(searchArray[0]));
+                        }
+                        else
+                        {
+                            String[] startTimeArray = searchArray[0].split(":");
+                            String[] endTimeArray = searchArray[2].split(":");
+                            LocalDateTime startDateTime = LocalDateTime.of(LocalDate.now(),
+                                    LocalTime.of(Integer.parseInt(startTimeArray[0]), Integer.parseInt(startTimeArray[1]), Integer.parseInt(startTimeArray[2]), 0));
+
+                            LocalDateTime endDateTime = LocalDateTime.of(LocalDate.now(),
+                                    LocalTime.of(Integer.parseInt(endTimeArray[0]), Integer.parseInt(endTimeArray[1]), Integer.parseInt(endTimeArray[2]), 0));
+
+                            writer.writeUTF(searchByTime(startDateTime, endDateTime));
                         }
                         break;
                     default:

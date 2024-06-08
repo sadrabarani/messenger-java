@@ -13,13 +13,13 @@ public class Message {
     private String content;
     private LocalDateTime dateTime;
     private User sender;
-    private User reciever;
+    private User receiver;
     private int type; // either 0 = chatroom message or 1 = pv message
-    public Message(String content, LocalDateTime dateTime, User sender, User reciever, int type) {
+    public Message(String content, LocalDateTime dateTime, User sender, User receiver, int type) {
         this.content = content;
         this.dateTime = dateTime;
         this.sender = sender;
-        this.reciever = reciever;
+        this.receiver = receiver;
         this.type = type;
     }
 

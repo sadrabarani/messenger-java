@@ -25,16 +25,16 @@ public class User extends Thread {
     private DataOutputStream writer;
     private boolean isActive;
     private User inPvUser;
-
+    
     public User(Socket connection, String name) throws IOException {
         this.inPvUser = null;
         this.userName = name;
         this.connection = connection;
         this.reader = new DataInputStream(connection.getInputStream());
         this.writer = new DataOutputStream(connection.getOutputStream());
-        this.messages = Server.messages;
-        this.users = Server.users;
-        this.blockList = new ArrayList<>(); // todo : get from database
+        /*this.messages = new ArrayList<>(); // todo : get from database
+        this.users = new ArrayList<>(); // todo : get from database
+        this.blockList = new ArrayList<>(); // todo : get from database*/
         this.isActive = true;
         showAllMessages();
     }
@@ -102,7 +102,7 @@ public class User extends Thread {
 
     private void showAllPvMessages() throws IOException {
         for(Message tmpMessage : messages)
-            if(tmpMessage.getType() == 1 && tmpMessage.getReciever().equals(inPvUser))
+            if(tmpMessage.getType() == 1 && tmpMessage.getReceiver().equals(inPvUser))
             {
                 showNewMessage(tmpMessage);
             }
@@ -145,7 +145,7 @@ public class User extends Thread {
         {
             for(Message tmpMessage : messages)
             {
-                if(tmpMessage.getType() == 1 && tmpMessage.getReciever().equals(inPvUser))
+                if(tmpMessage.getType() == 1 && tmpMessage.getReceiver().equals(inPvUser))
                 {
                     synchronized (tmpMessage) {
                         messages.remove(tmpMessage);
@@ -189,14 +189,13 @@ public class User extends Thread {
     }
 
     private void showAllMessages() throws IOException {
-        for (Message tmpMessage : messages) if(tmpMessage.getType() == 0) {
-            showNewMessage(tmpMessage);
-        }
+        writer.writeUTF(database.showAllChatRoomMessage());
     }
 
     private void addMessage(String content) throws IOException {
         synchronized (messages) {
             messages.add(new Message(content, LocalDateTime.now(), this, null, 0));
+            database.writeMessageInDB(messages.getLast());
             for (User tmpUser : users) if(tmpUser.inPvUser != null) {
                 synchronized (tmpUser) {
                     tmpUser.showNewMessage(messages.getLast());
@@ -205,12 +204,12 @@ public class User extends Thread {
         }
     }
 
-    private void addWhisper(String content, String recieverUsername) throws IOException {
+    private void addWhisper(String content, String receiverUsername) throws IOException {
         synchronized (messages) {
-            User reciever = users.stream().filter(user -> user.getUserName().equals(recieverUsername))
+            User receiver = users.stream().filter(user -> user.getUserName().equals(receiverUsername))
                     .findFirst().orElse(null);
-            if (reciever != null) {
-                messages.add(new Message(content, LocalDateTime.now(), this, reciever, 0));
+            if (receiver != null) {
+                messages.add(new Message(content, LocalDateTime.now(), this, receiver, 0));
                 for (User tmpUser : users) if(tmpUser.inPvUser != null) {
                     synchronized (tmpUser) {
                         tmpUser.showNewMessage(messages.getLast());
@@ -221,10 +220,10 @@ public class User extends Thread {
     }
 
     public void showNewMessage(Message newMessage) throws IOException {
-        if (newMessage.getReciever() == null || newMessage.getReciever().equals(this))
+        if (newMessage.getReceiver() == null || newMessage.getReceiver().equals(this))
             writer.writeUTF(newMessage.toString());
         else
-            writer.writeUTF("whisper for " + newMessage.getReciever().getUserName());
+            writer.writeUTF("whisper for " + newMessage.getReceiver().getUserName());
     }
 
 }

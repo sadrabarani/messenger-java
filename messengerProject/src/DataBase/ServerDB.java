@@ -4,7 +4,8 @@ import Message.*;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-
+import java.util.ArrayList;
+import User.*;
 public class ServerDB {
     private DatabaseManager dbManager;
 
@@ -13,7 +14,7 @@ public class ServerDB {
     }
 
     public String writeMessageInDB(Message message) {
-        String sqlCom = String.format("INSERT INTO `messages` (`sender`, `receiver`, `content`, `dateTime`) VALUES ('%s','%s', '%s', " + message.getDateTime() + ")", message.getSender().getUserName(), message.getReciever().getUserName(), message.getContent());
+        String sqlCom = String.format("INSERT INTO `messages` (`sender`, `receiver`, `content`, `dateTime`) VALUES ('%s','%s', '%s', " + message.getDateTime() + ")", message.getSender().getUserName(), message.getReceiver().getUserName(), message.getContent());
         try {
             exeDB(sqlCom);
             return "add succesful";
@@ -61,7 +62,7 @@ public class ServerDB {
             PreparedStatement preparedStatement = conn.prepareStatement(sqlCmd);
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
-                    res.append("Sender: " + rs.getString("sender") + ", reciever: " + rs.getString("receiver")
+                    res.append("Sender: " + rs.getString("sender") + ", receiver: " + rs.getString("receiver")
                             + ", content: " + rs.getString("content") + ", date Time: " + rs.getDate("dateTime")
                             + rs.getString("contentType") + "\n");
                 }
@@ -70,6 +71,61 @@ public class ServerDB {
             e.printStackTrace();
         }
         return String.valueOf(res);
+    }
+
+    public ArrayList<String> getUsernames() {
+        ArrayList<String> usernames = new ArrayList<>();
+        String sqlCmd = "SELECT name FROM users";
+
+        try {
+            Connection conn = dbManager.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlCmd);
+            try (ResultSet rs = preparedStatement.executeQuery())
+            {
+                while (rs.next())
+                {
+                    usernames.add(rs.getString("name"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return usernames;
+    }
+
+    public User getUserByUsername(String username)
+    {
+        User result = Server.users.stream().filter(u -> u.getUserName().equals(username)).findFirst().orElse(null);
+        return  result;
+    }
+
+    public ArrayList<Message> getMessages()
+    {
+        ArrayList<Message> allMessages = new ArrayList<>();
+        String sqlCmd = "SELECT * FROM messages";
+
+        try {
+            Connection conn = dbManager.getConnection();
+            PreparedStatement preparedStatement = conn.prepareStatement(sqlCmd);
+            try (ResultSet rs = preparedStatement.executeQuery())
+            {
+                while (rs.next())
+                {
+
+                    String sender = rs.getString("sender");
+                    String receiver = rs.getString("receiver");
+                    String content = rs.getString("content");
+                    LocalDateTime dateTime = LocalDateTime.parse(rs.getString("sender"));
+                    int type = Integer.parseInt(rs.getString("contentType"));
+                    allMessages.add(new Message(content, dateTime, getUserByUsername(sender), getUserByUsername(receiver), type));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return allMessages;
     }
 
     public void exeDB(String sqlCmd) throws SQLException {

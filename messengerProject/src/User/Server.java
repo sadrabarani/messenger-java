@@ -1,5 +1,6 @@
 package User;
 
+import DataBase.ServerDB;
 import Message.Message;
 
 import java.io.DataInputStream;
@@ -10,10 +11,18 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Server {
-    public static ArrayList<Message> messages = new ArrayList<Message>();
-    public static ArrayList<User> users = new ArrayList<User>();
+
+
+    public static ArrayList<User> users = new ArrayList<>();
+    public static ArrayList<User> messages = new ArrayList<>();
     public static void main(String[] args) throws IOException
     {
+        ServerDB database = new ServerDB();
+        ArrayList<String> usernames = database.getUsernames();
+        for(String username : usernames)
+        {
+            users.add(new User(null, username));
+        }
         ServerSocket serverSocket = new ServerSocket(8080);
         while(true)
         {
@@ -38,6 +47,7 @@ public class Server {
             else
             {
                 searchedUser.setActive(true);
+                searchedUser.setConnection(connection);
                 writer.writeUTF("Connected!");
                 searchedUser.start();
             }

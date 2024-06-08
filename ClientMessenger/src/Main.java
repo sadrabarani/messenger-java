@@ -22,7 +22,7 @@ class Client {
     private static DataOutputStream out = null;
     private static DataInputStream serverInput;
     private Thread senderThread;
-    private Thread recieverThread;
+    private Thread receiverThread;
 
     public Client(String userName) {
         this.userName = userName;
@@ -38,8 +38,8 @@ class Client {
         senderThread = new Thread(send);
         senderThread.start();
         ReceiveMessege receive = new ReceiveMessege(userName);
-        recieverThread = new Thread(receive);
-        recieverThread.start();
+        receiverThread = new Thread(receive);
+        receiverThread.start();
     }
 
     public void closeEveryThing() {

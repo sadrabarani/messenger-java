@@ -85,7 +85,7 @@ public class ServerDB {
 
 
     public String searchByName(String userName) {
-        String sqlCmd = String.format("SELECT sender, receiver, content, dateTime, contentType FROM messages WHERE sender = '%s' AND contentType = %d AND receiver = '%s'", userName,0,null);
+        String sqlCmd = String.format("SELECT sender, receiver, content, dateTime, contentType FROM messages WHERE sender = '%s' AND contentType = %d AND receiver = '%s'", userName, 0, null);
         return exeQuery(sqlCmd);
     }
 

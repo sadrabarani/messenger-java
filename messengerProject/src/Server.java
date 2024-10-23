@@ -1,5 +1,5 @@
-import lombok.Getter;
-import lombok.Setter;
+import message.Message;
+import user.User;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
